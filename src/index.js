@@ -13,9 +13,19 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.set('views', path.join(__dirname, '../templates/views'))
 hbs.registerPartials(path.join(__dirname, '../templates/partials'))
 
-io.on('connection', () => {
-	console.log('New websocket connection')
-})
+io.on('connection', (socket) => {
+	console.log('New websocket connection');
+	socket.emit('message', "Welcome!");
+	socket.broadcast.emit('message', 'A new user has joined')
+
+	socket.on('sendMessage', (sendMessage) => {
+		io.emit('sendMessage', sendMessage)
+	})
+
+	socket.on('disconnect', () => {
+		io.emit('message', 'A user has left')
+	})
+});
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
