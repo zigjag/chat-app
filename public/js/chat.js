@@ -14,11 +14,14 @@ socket.on('sendMessage', (sendMessage) => {
     console.log(sendMessage)
 })
 
-document.querySelector('#send-location').addEventListener('click', () => {
+document.querySelector('#send-location').onclick = () => {
     if(!navigator.geolocation){
         return alert('Geolocation not available.')
     }
     navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
+        socket.emit('sendLocation', {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
     });
-})
+}
